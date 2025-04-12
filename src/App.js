@@ -17,12 +17,12 @@ const AppContent = () => {
     setIsMenuOpen(false); // Close menu when path changes
   }, [location.pathname]);
 
+  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
   useEffect(() => {
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
     }
-  }, []);
+  }, [token]);
 
   const menuItems = [
     { text: 'Home', path: '/home' },
