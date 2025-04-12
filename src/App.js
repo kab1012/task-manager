@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { Home } from './pages/Home';
 import TaskList from './components/TaskList';
@@ -39,7 +39,7 @@ const AppContent = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage?.clear;
+    localStorage?.clear();
     setTimeout(() => {
       navigate('/login');
     }, 300);
