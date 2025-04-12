@@ -5,10 +5,10 @@ import backend_domain from '../helpers/api.ts';
 
 const TaskForm = ({ onTaskAdded }) => {
   const [title, setTitle] = useState('');
-  const [userId, setUserId] = useState('');
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const user_id = localStorage?.getItem('user_id');
 
   useEffect(() => {
     const token = localStorage.getItem('authToken') || localStorage.getItem('token');
@@ -17,18 +17,6 @@ const TaskForm = ({ onTaskAdded }) => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(`${backend_domain}/api/users`);
-        setUsers(response.data);
-      } catch (err) {
-        console.error('Failed to fetch users:', err);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,14 +27,13 @@ const TaskForm = ({ onTaskAdded }) => {
       const response = await axios.post(`${backend_domain}/api/tasks`, {
         tasks: title,
         status: 'active',
-        user_id: parseInt(userId),
+        user_id: parseInt(user_id),
       });
 
       if (response.status === 200 || response.status === 201) {
         const newTask = response.data;
         onTaskAdded(newTask);
         setTitle('');
-        setUserId('');
         setTimeout(() => {
           navigate('/tasks');
         }, 300);
@@ -93,24 +80,7 @@ const TaskForm = ({ onTaskAdded }) => {
           justifyContent: 'center',
         }}
       >
-        <select
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            minWidth: '280px',
-            borderRadius: '0.5rem',
-            border: '1px solid #ccc',
-            fontSize: '1rem',
-          }}
-        >
-          <option value="">Select a user</option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name} (ID: {user.id})
-            </option>
-          ))}
-        </select>
+        
 
         <input
           type="text"

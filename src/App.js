@@ -127,7 +127,7 @@ const AppContent = () => {
                           padding: '0.5rem 1rem',
                           cursor: 'pointer',
                           fontSize: '1rem',
-                          width: '100%',
+                          width: '50%',
                           transition: 'background-color 0.3s ease'
                         }}
                       >

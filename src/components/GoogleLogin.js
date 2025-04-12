@@ -49,9 +49,35 @@ const GoogleLogin = () => {
   };
 
   return (
-    <button onClick={handleGoogleLogin} style={{ padding: '0.5rem 1rem', backgroundColor: '#DB4437', color: 'white', border: 'none', borderRadius: '5px' }}>
+    // <button onClick={handleGoogleLogin} style={{ padding: '0.5rem 1rem', backgroundColor: 'white', color: 'black', border: 'solid', borderRadius: '5px' }}>
+    //   Sign in with Google
+    // </button>
+    <div
+      onClick={handleGoogleLogin}
+      style={{
+
+        height: '50px',
+        color: 'black',
+        fontSize: '16px',
+        fontWeight: '500',
+        border: 'none',
+        borderRadius: '5px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+        transition: 'background-color 0.3s ease'
+      }}
+    >
+      <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt="Google Logo"
+        style={{ width: '20px', height: '20px',padding:'0.2em 1em', }}
+      />
       Sign in with Google
-    </button>
+    </div>
   );
 };
 
