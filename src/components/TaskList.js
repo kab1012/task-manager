@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TaskItem from './TaskItem';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import backend_domain from '../helpers/api';
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const TaskList = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/tasks');
+        const response = await axios.get(`${backend_domain}/api/tasks`);
         const formattedTasks = response.data.map((task) => ({
           id: task.id,
           title: task.tasks,
@@ -28,7 +28,7 @@ const TaskList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/apitasks/${id}`);
+      await axios.delete(`${backend_domain}/api/tasks/${id}`);
       setTasks(tasks.filter((task) => task.id !== id));
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -40,7 +40,7 @@ const TaskList = () => {
     const updatedStatus = task.completed ? 'active' : 'completed';
 
     try {
-      await axios.patch(`http://localhost:3000/api/tasks/${id}/complete`, {
+      await axios.patch(`${backend_domain}/api/tasks/${id}/complete`, {
         status: updatedStatus,
       });
 

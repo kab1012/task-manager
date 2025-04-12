@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Router } from 'react-router-dom';
 import axios from 'axios';
+import backend_domain from '../helpers/api';
 
 const TaskForm = ({ onTaskAdded }) => {
   const [title, setTitle] = useState('');
@@ -12,7 +13,7 @@ const TaskForm = ({ onTaskAdded }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/users');
+        const response = await axios.get(`${backend_domain}/api/users`);
         setUsers(response.data);
       } catch (err) {
         console.error('Failed to fetch users:', err);
@@ -28,7 +29,7 @@ const TaskForm = ({ onTaskAdded }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/tasks', {
+      const response = await axios.post(`${backend_domain}/api/tasks`, {
         tasks: title,
         status: 'active',
         user_id: parseInt(userId),
