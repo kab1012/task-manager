@@ -1,6 +1,6 @@
 type Environment = 'PROD' | 'STAGING';
 
-const ENV: Environment = 'PROD'; // FOR IMPLEMENTATION
+const ENV: Environment = 'STAGING'; // FOR IMPLEMENTATION
 
 function getBackendDomain(env: Environment): string {
   switch (env) {

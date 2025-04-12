@@ -14,6 +14,10 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setIsMenuOpen(false); // Close menu when path changes
+  }, [location.pathname]);
+
+  useEffect(() => {
     const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
@@ -101,40 +105,51 @@ const AppContent = () => {
                 <div style={mobileMenuContainer}>
                   {menuItems.map((item, index) => (
                     <div key={index} style={mobileMenuItem}>
-                      <Link to={item.path} style={{ ...linkStyle, padding: 0 }} onClick={() => setIsMenuOpen(false)}>
+                      <Link
+                        to={item.path}
+                        style={{ ...linkStyle, padding: 0 }}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         {item.text}
                       </Link>
                     </div>
                   ))}
-                  {isLoggedIn && (
-                    <button
-                      onClick={handleLogout}
-                      style={{
-                        backgroundColor: '#ff5c5c',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '5px',
-                        padding: '0.5rem 1rem',
-                        cursor: 'pointer',
-                        fontSize: '1rem',
-                        transition: 'background-color 0.3s ease'
-                      }}
-                    >
-                      Logout
-                    </button>
-                  )}
 
+                  {isLoggedIn && (
+                    <div style={mobileMenuItem}>
+                      <button
+                        onClick={handleLogout}
+                        style={{
+                          backgroundColor: '#ff5c5c',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '5px',
+                          padding: '0.5rem 1rem',
+                          cursor: 'pointer',
+                          fontSize: '1rem',
+                          width: '100%',
+                          transition: 'background-color 0.3s ease'
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
+
             </div>
           ) : (
-            <div>
-              {menuItems.map((item, index) => (
-                <Link key={index} to={item.path} style={linkStyle}>
-                  {item.text}
-                </Link>
-              ))}
-            </div>
+            <>
+              <div>
+                {menuItems.map((item, index) => (
+                  <Link key={index} to={item.path} style={linkStyle}>
+                    {item.text}
+                  </Link>
+                ))}
+                <button onClick={handleLogout} style={linkStyle}>Log Out</button>
+              </div>
+            </>
           )}
         </nav>
       )}

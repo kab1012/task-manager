@@ -19,11 +19,13 @@ const Login = () => {
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
       localStorage.setItem('user_id', response.data.user.id);
+      
 
       // Redirect to the tasks page
       navigate('/tasks');
     } catch (err) {
       // Handle login errors
+      
       if (err.response && err.response.data) {
         setError(err.response.data.error);
       } else {
@@ -52,7 +54,7 @@ const Login = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={handleLogin} style={{ padding: '0.5rem 1rem' }}>Login</button>
 
-      {/* <GoogleAuth /> */}
+      <div style={{ padding: '0.5rem 1rem' }}><GoogleAuth /></div>
     </div>
   );
 };
