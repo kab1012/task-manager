@@ -40,14 +40,18 @@ const TaskForm = ({ onTaskAdded }) => {
         onTaskAdded(newTask);
         setTitle('');
         setUserId('');
-        Router.push('/tasks'); // redirect now works properly
+        setTimeout(() => {
+          navigate('/tasks');
+        }, 300);
       } else {
         console.error('Failed to create task');
       }
     } catch (err) {
       console.error('Error creating task:', err);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        navigate('/tasks');
+      }, 300);
     }
   };
 
@@ -115,26 +119,50 @@ const TaskForm = ({ onTaskAdded }) => {
           }}
         />
 
-        <button
-          type="submit"
-          style={{
-            background: 'linear-gradient(to right, #3b82f6, #6366f1)',
-            color: 'white',
-            fontWeight: '600',
-            padding: '0.6rem 1.5rem',
-            borderRadius: '0.5rem',
-            border: 'none',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-            transition: 'transform 0.2s ease-in-out',
-          }}
-          onMouseOver={(e) => (e.target.style.transform = 'scale(1.03)')}
-          onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
-          disabled={loading}
-        >
-          {loading ? 'Adding...' : 'Add Task'}
-        </button>
+        {loading ?
+
+          <button
+            type="submit"
+            style={{
+              background: 'linear-gradient(to right, #3b82f6, #6366f1)',
+              color: 'white',
+              fontWeight: '600',
+              padding: '0.6rem 1.5rem',
+              borderRadius: '0.5rem',
+              border: 'none',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1,
+              transition: 'transform 0.2s ease-in-out',
+            }}
+            onMouseOver={(e) => (e.target.style.transform = 'scale(1.03)')}
+            onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
+            disabled={loading}
+          >
+            Adding....
+          </button>
+          :
+          <button
+            type="submit"
+            style={{
+              background: 'linear-gradient(to right, #3b82f6, #6366f1)',
+              color: 'white',
+              fontWeight: '600',
+              padding: '0.6rem 1.5rem',
+              borderRadius: '0.5rem',
+              border: 'none',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1,
+              transition: 'transform 0.2s ease-in-out',
+            }}
+            onMouseOver={(e) => (e.target.style.transform = 'scale(1.03)')}
+            onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
+            disabled={loading}
+          >
+            Add Task
+          </button>
+        }
       </div>
     </form>
   );
