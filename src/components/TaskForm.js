@@ -11,7 +11,7 @@ const TaskForm = ({ onTaskAdded }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     if (!token) {
       navigate('/login');
     }

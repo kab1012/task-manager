@@ -3,75 +3,53 @@ import TaskItem from './TaskItem';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import backend_domain from '../helpers/api.ts';
-
 const TaskList = () => {
-  const [allTasks, setAllTasks] = useState([]);
-  const [filteredTasks, setFilteredTasks] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [tasks, setTasks] = useState([]);
+
+  const user_id = localStorage?.getItem('user_id');
+  
+  
   const navigate = useNavigate();
 
+  // Fetch tasks from backend
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      navigate('/login');
-    }
-  }, [navigate]);
-
-  // Fetch all users and tasks
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchTasks = async () => {
       try {
-        const [usersRes, tasksRes] = await Promise.all([
-          axios.get(`${backend_domain}/api/users`),
-          axios.get(`${backend_domain}/api/tasks`),
-        ]);
-
-        setUsers(usersRes.data);
-
-        const formattedTasks = tasksRes.data.map((task) => ({
+        const response = await axios.get(`${backend_domain}/api/tasks/users/${Number(user_id)}`);
+        
+        const formattedTasks = response.data.map((task) => ({
           id: task.id,
           title: task.tasks,
           completed: task.status !== 'active',
-          userId: task.user_id,
         }));
-
         const sortedTasks = formattedTasks.sort((a, b) => {
+          // Show incomplete (active) tasks first
           if (a.completed !== b.completed) return a.completed ? 1 : -1;
+
+          // If both are same in completion status, keep latest ones on top (assuming higher ID = newer)
           return b.id - a.id;
         });
 
-        setAllTasks(sortedTasks);
-        setFilteredTasks(sortedTasks);
+        setTasks(sortedTasks);
       } catch (error) {
-        console.error('Error fetching users or tasks:', error);
+        console.error('Error fetching tasks:', error);
       }
     };
 
-    fetchData();
-  }, []);
-
-  // Filter tasks by selected user
-  useEffect(() => {
-    if (selectedUserId) {
-      setFilteredTasks(allTasks.filter((task) => task.userId === parseInt(selectedUserId)));
-    } else {
-      setFilteredTasks(allTasks);
-    }
-  }, [selectedUserId, allTasks]);
+    fetchTasks();
+  }, [user_id]);
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${backend_domain}/api/tasks/${id}`);
-      const updated = allTasks.filter((task) => task.id !== id);
-      setAllTasks(updated);
+      setTasks(tasks.filter((task) => task.id !== id));
     } catch (error) {
       console.error('Error deleting task:', error);
     }
   };
 
   const handleComplete = async (id) => {
-    const task = allTasks.find((t) => t.id === id);
+    const task = tasks.find((t) => t.id === id);
     const updatedStatus = task.completed ? 'active' : 'completed';
 
     try {
@@ -79,17 +57,24 @@ const TaskList = () => {
         status: updatedStatus,
       });
 
-      const updatedTasks = allTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+      setTasks(
+        tasks.map((task) =>
+          task.id === id ? { ...task, completed: !task.completed } : task
+        )
       );
-      setAllTasks(updatedTasks);
     } catch (error) {
       console.error('Error updating task status:', error);
     }
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
+    <div
+      style={{
+        padding: '20px',
+        maxWidth: '700px',
+        margin: '0 auto',
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -100,7 +85,9 @@ const TaskList = () => {
           gap: '10px',
         }}
       >
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Task List</h3>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
+          Task List
+        </h3>
         <button
           onClick={() => navigate('/add')}
           style={{
@@ -119,32 +106,8 @@ const TaskList = () => {
         </button>
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="user-filter" style={{ marginRight: '10px' }}>
-          Filter by User:
-        </label>
-        <select
-          id="user-filter"
-          value={selectedUserId}
-          onChange={(e) => setSelectedUserId(e.target.value)}
-          style={{
-            padding: '6px 10px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            minWidth: '180px',
-          }}
-        >
-          <option value="">All Users</option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.username || user.name || `User ${user.id}`}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {filteredTasks.length > 0 ? (
-        filteredTasks.map((task) => (
+      {tasks.length > 0 ? (
+        tasks.map((task) => (
           <TaskItem
             key={task.id}
             task={task}
@@ -155,40 +118,6 @@ const TaskList = () => {
       ) : (
         <p style={{ color: '#777', fontStyle: 'italic' }}>No tasks available.</p>
       )}
-
-      <button
-        onClick={() => navigate('/add')}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          border: 'none',
-          borderRadius: '50%',
-          width: '60px',
-          height: '60px',
-          fontSize: '30px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s',
-          // Only display the button on screens smaller than 768px
-          '@media (min-width: 768px)': {
-            display: 'block',
-          },
-          // Hide button on larger screens
-          '@media (max-width: 769px)': {
-            display: 'none',
-          },
-        }}
-        onMouseOver={(e) => (e.target.style.backgroundColor = '#1d4ed8')}
-        onMouseOut={(e) => (e.target.style.backgroundColor = '#2563eb')}
-      >
-        +
-      </button>
     </div>
   );
 };

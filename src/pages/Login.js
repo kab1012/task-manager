@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import backend_domain from '../helpers/api.ts';
 
+import GoogleAuth from '../components/GoogleLogin.js'; // import the GoogleAuth component
+
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -16,6 +18,7 @@ const Login = () => {
 
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('user_id', response.data.user.id);
 
       // Redirect to the tasks page
       navigate('/tasks');
@@ -48,6 +51,8 @@ const Login = () => {
       />
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={handleLogin} style={{ padding: '0.5rem 1rem' }}>Login</button>
+
+      {/* <GoogleAuth /> */}
     </div>
   );
 };
