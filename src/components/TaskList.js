@@ -148,6 +148,40 @@ const TaskList = () => {
       ) : (
         <p style={{ color: '#777', fontStyle: 'italic' }}>No tasks available.</p>
       )}
+
+      <button
+        onClick={() => navigate('/add')}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: '#2563eb',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '60px',
+          height: '60px',
+          fontSize: '30px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s',
+          // Only display the button on screens smaller than 768px
+          '@media (min-width: 768px)': {
+            display: 'block',
+          },
+          // Hide button on larger screens
+          '@media (max-width: 769px)': {
+            display: 'none',
+          },
+        }}
+        onMouseOver={(e) => (e.target.style.backgroundColor = '#1d4ed8')}
+        onMouseOut={(e) => (e.target.style.backgroundColor = '#2563eb')}
+      >
+        +
+      </button>
     </div>
   );
 };
