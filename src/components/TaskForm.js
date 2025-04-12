@@ -11,6 +11,13 @@ const TaskForm = ({ onTaskAdded }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${backend_domain}/api/users`);

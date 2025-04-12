@@ -11,6 +11,13 @@ const TaskList = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   // Fetch all users and tasks
   useEffect(() => {
     const fetchData = async () => {
