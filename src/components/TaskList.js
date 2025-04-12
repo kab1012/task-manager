@@ -17,7 +17,15 @@ const TaskList = () => {
           title: task.tasks,
           completed: task.status !== 'active',
         }));
-        setTasks(formattedTasks);
+        const sortedTasks = formattedTasks.sort((a, b) => {
+          // Show incomplete (active) tasks first
+          if (a.completed !== b.completed) return a.completed ? 1 : -1;
+
+          // If both are same in completion status, keep latest ones on top (assuming higher ID = newer)
+          return b.id - a.id;
+        });
+
+        setTasks(sortedTasks);
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
