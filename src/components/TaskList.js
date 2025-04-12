@@ -3,48 +3,68 @@ import TaskItem from './TaskItem';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import backend_domain from '../helpers/api.ts';
+
 const TaskList = () => {
-  const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState('');
   const navigate = useNavigate();
 
-  // Fetch tasks from backend
+  // Fetch all users and tasks
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${backend_domain}/api/tasks`);
-        const formattedTasks = response.data.map((task) => ({
+        const [usersRes, tasksRes] = await Promise.all([
+          axios.get(`${backend_domain}/api/users`),
+          axios.get(`${backend_domain}/api/tasks`),
+        ]);
+
+        setUsers(usersRes.data);
+
+        const formattedTasks = tasksRes.data.map((task) => ({
           id: task.id,
           title: task.tasks,
           completed: task.status !== 'active',
+          userId: task.user_id,
         }));
-        const sortedTasks = formattedTasks.sort((a, b) => {
-          // Show incomplete (active) tasks first
-          if (a.completed !== b.completed) return a.completed ? 1 : -1;
 
-          // If both are same in completion status, keep latest ones on top (assuming higher ID = newer)
+        const sortedTasks = formattedTasks.sort((a, b) => {
+          if (a.completed !== b.completed) return a.completed ? 1 : -1;
           return b.id - a.id;
         });
 
-        setTasks(sortedTasks);
+        setAllTasks(sortedTasks);
+        setFilteredTasks(sortedTasks);
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        console.error('Error fetching users or tasks:', error);
       }
     };
 
-    fetchTasks();
+    fetchData();
   }, []);
+
+  // Filter tasks by selected user
+  useEffect(() => {
+    if (selectedUserId) {
+      setFilteredTasks(allTasks.filter((task) => task.userId === parseInt(selectedUserId)));
+    } else {
+      setFilteredTasks(allTasks);
+    }
+  }, [selectedUserId, allTasks]);
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${backend_domain}/api/tasks/${id}`);
-      setTasks(tasks.filter((task) => task.id !== id));
+      const updated = allTasks.filter((task) => task.id !== id);
+      setAllTasks(updated);
     } catch (error) {
       console.error('Error deleting task:', error);
     }
   };
 
   const handleComplete = async (id) => {
-    const task = tasks.find((t) => t.id === id);
+    const task = allTasks.find((t) => t.id === id);
     const updatedStatus = task.completed ? 'active' : 'completed';
 
     try {
@@ -52,24 +72,17 @@ const TaskList = () => {
         status: updatedStatus,
       });
 
-      setTasks(
-        tasks.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task
-        )
+      const updatedTasks = allTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
       );
+      setAllTasks(updatedTasks);
     } catch (error) {
       console.error('Error updating task status:', error);
     }
   };
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        maxWidth: '700px',
-        margin: '0 auto',
-      }}
-    >
+    <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
       <div
         style={{
           display: 'flex',
@@ -80,9 +93,7 @@ const TaskList = () => {
           gap: '10px',
         }}
       >
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
-          Task List
-        </h3>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Task List</h3>
         <button
           onClick={() => navigate('/add')}
           style={{
@@ -101,8 +112,32 @@ const TaskList = () => {
         </button>
       </div>
 
-      {tasks.length > 0 ? (
-        tasks.map((task) => (
+      <div style={{ marginBottom: '20px' }}>
+        <label htmlFor="user-filter" style={{ marginRight: '10px' }}>
+          Filter by User:
+        </label>
+        <select
+          id="user-filter"
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
+          style={{
+            padding: '6px 10px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            minWidth: '180px',
+          }}
+        >
+          <option value="">All Users</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.username || user.name || `User ${user.id}`}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {filteredTasks.length > 0 ? (
+        filteredTasks.map((task) => (
           <TaskItem
             key={task.id}
             task={task}
