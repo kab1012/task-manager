@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TaskItem from './TaskItem';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import backend_domain from '../helpers/api';
+import backend_domain from '../helpers/api.ts';
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();

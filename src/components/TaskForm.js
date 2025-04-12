@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Router } from 'react-router-dom';
 import axios from 'axios';
-import backend_domain from '../helpers/api';
+import backend_domain from '../helpers/api.ts';
 
 const TaskForm = ({ onTaskAdded }) => {
   const [title, setTitle] = useState('');
