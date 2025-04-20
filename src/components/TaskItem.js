@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TaskItem = ({ task, onDelete, onComplete }) => {
   const containerStyle = {
@@ -29,9 +30,11 @@ const TaskItem = ({ task, onDelete, onComplete }) => {
   const buttonStyle = {
     border: 'none',
     borderRadius: '6px',
-    padding: '6px 12px',
+    padding: '8px 14px',
     cursor: 'pointer',
-    fontWeight: 'bold',
+    fontWeight: 600,
+    fontSize: '0.9rem',
+    transition: 'all 0.3s ease',
     flexShrink: 0,
   };
 
@@ -41,6 +44,10 @@ const TaskItem = ({ task, onDelete, onComplete }) => {
     color: '#fff',
   };
 
+  const completeButtonHoverStyle = {
+    backgroundColor: task.completed ? '#e0a800' : '#388e3c',
+  };
+
   const deleteButtonStyle = {
     ...buttonStyle,
     backgroundColor: '#ff4d4f',
@@ -48,23 +55,58 @@ const TaskItem = ({ task, onDelete, onComplete }) => {
     marginLeft: '8px',
   };
 
+  const deleteButtonHoverStyle = {
+    backgroundColor: '#d9363e',
+  };
+
   const buttonContainerStyle = {
     display: 'flex',
     flexShrink: 0,
   };
 
+  // Button hover state logic using local state (optional enhancement)
+  const [hovered, setHovered] = React.useState({ complete: false, delete: false });
+
   return (
-    <div style={containerStyle}>
-      <span style={titleStyle}>{task.title}</span>
-      <div style={buttonContainerStyle}>
-        <button style={completeButtonStyle} onClick={() => onComplete(task.id)}>
-          {task.completed ? 'Undo' : 'Complete'}
-        </button>
-        <button style={deleteButtonStyle} onClick={() => onDelete(task.id)}>
-          Delete
-        </button>
+    <Link
+      to={`/task/${task.id}`}
+      style={{ flex: 1, textDecoration: 'none', color: '#2563eb', fontWeight: 'bold' }}
+    >
+      <div style={containerStyle} onClick={e => e.stopPropagation()}>
+        <span style={titleStyle}>{task.title}</span>
+        <div style={buttonContainerStyle}>
+          <button
+            style={{
+              ...completeButtonStyle,
+              ...(hovered.complete ? completeButtonHoverStyle : {}),
+            }}
+            onClick={e => {
+              e.preventDefault();
+              onComplete(task.id);
+            }}
+            onMouseEnter={() => setHovered(prev => ({ ...prev, complete: true }))}
+            onMouseLeave={() => setHovered(prev => ({ ...prev, complete: false }))}
+          >
+            {task.completed ? 'Undo' : 'Complete'}
+          </button>
+
+          <button
+            style={{
+              ...deleteButtonStyle,
+              ...(hovered.delete ? deleteButtonHoverStyle : {}),
+            }}
+            onClick={e => {
+              e.preventDefault();
+              onDelete(task.id);
+            }}
+            onMouseEnter={() => setHovered(prev => ({ ...prev, delete: true }))}
+            onMouseLeave={() => setHovered(prev => ({ ...prev, delete: false }))}
+          >
+            Delete
+          </button>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

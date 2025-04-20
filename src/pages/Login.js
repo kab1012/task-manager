@@ -20,12 +20,10 @@ const Login = () => {
       localStorage.setItem('authToken', response.data.token);
       localStorage.setItem('user_id', response.data.user.id);
 
-
       // Redirect to the tasks page
       navigate('/tasks');
     } catch (err) {
       // Handle login errors
-
       if (err.response && err.response.data) {
         setError(err.response.data.error);
       } else {
@@ -36,32 +34,94 @@ const Login = () => {
 
   return (
     <>
-      <div style={{ margin: '1rem auto', textAlign: 'center', fontSize: '1.5em' }}>
+      <div style={{
+        margin: '2rem auto',
+        textAlign: 'center',
+        fontSize: '1.5em',
+        fontWeight: '600',
+        color: '#1f2937'
+      }}>
         To Do App
       </div>
-      <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center', padding: '1em', border: 'solid' }}>
-        <h2>Login</h2>
+      <div style={{
+        maxWidth: '400px',
+        margin: '2rem auto',
+        padding: '2rem',
+        borderRadius: '8px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+        textAlign: 'center',
+        border: '1px solid #e5e7eb'
+      }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          color: '#2563eb',
+          marginBottom: '1.5rem',
+        }}>Login</h2>
+
         <input
           type="email"
           placeholder="Email"
-          style={{ width: '75%', padding: '0.5rem', marginBottom: '1rem' }}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            marginBottom: '1rem',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb',
+            fontSize: '1rem',
+            outline: 'none',
+            transition: 'border-color 0.3s',
+          }}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onFocus={(e) => e.target.style.borderColor = '#2563eb'}
+          onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
         />
+
         <input
           type="password"
           placeholder="Password"
-          style={{ width: '75%', padding: '0.5rem', marginBottom: '1rem' }}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            marginBottom: '1rem',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb',
+            fontSize: '1rem',
+            outline: 'none',
+            transition: 'border-color 0.3s',
+          }}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onFocus={(e) => e.target.style.borderColor = '#2563eb'}
+          onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
         />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button onClick={handleLogin} style={{
-          padding: '1rem 1.5rem', fontSize: '16px',
-          fontWeight: '500', backgroundColor: '#DB4437', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'
-        }}>Login</button>
 
-        <div style={{ padding: '0.5rem 1rem' }}><GoogleAuth /></div>
+        {error && <p style={{ color: '#e11d48', fontSize: '1rem', marginBottom: '1rem' }}>{error}</p>}
+
+        <button
+          onClick={handleLogin}
+          style={{
+            width: '100%',
+            padding: '1rem',
+            fontSize: '16px',
+            fontWeight: '500',
+            backgroundColor: '#DB4437',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
+          }}
+          onMouseOver={(e) => e.target.style.backgroundColor = '#c1351d'}
+          onMouseOut={(e) => e.target.style.backgroundColor = '#DB4437'}
+        >
+          Login
+        </button>
+
+        <div style={{ padding: '1rem 0' }}>
+          <GoogleAuth />
+        </div>
       </div>
     </>
   );

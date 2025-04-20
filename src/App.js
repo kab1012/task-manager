@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Link, useLocation, useNavigate 
 import { Home } from './pages/Home';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
+import TaskDetails from './components/TaskDetails';
 import Login from './pages/Login';
 
 const AppContent = () => {
@@ -47,7 +48,7 @@ const AppContent = () => {
     setTimeout(() => {
       navigate('/login');
     }, 300);
-  }
+  };
 
   const navStyle = {
     display: 'flex',
@@ -73,7 +74,7 @@ const AppContent = () => {
     right: 0,
     backgroundColor: '#fff',
     width: '100%',
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     zIndex: 1000,
   };
 
@@ -87,7 +88,12 @@ const AppContent = () => {
     <div>
       {!isLoginPage && (
         <nav style={navStyle}>
-          <h2 style={{ margin: 0 }}><Link to="/home" style={linkStyle}>To Do App</Link></h2>
+          <h2 style={{ margin: 0 }}>
+            <Link to="/home" style={linkStyle}>
+              To Do App
+            </Link>
+          </h2>
+
           {isMobile ? (
             <div>
               <button
@@ -101,6 +107,7 @@ const AppContent = () => {
               >
                 ☰
               </button>
+
               {isMenuOpen && (
                 <div style={mobileMenuContainer}>
                   {menuItems.map((item, index) => (
@@ -128,7 +135,7 @@ const AppContent = () => {
                           cursor: 'pointer',
                           fontSize: '1rem',
                           width: '50%',
-                          transition: 'background-color 0.3s ease'
+                          transition: 'background-color 0.3s ease',
                         }}
                       >
                         Logout
@@ -137,19 +144,18 @@ const AppContent = () => {
                   )}
                 </div>
               )}
-
             </div>
           ) : (
-            <>
-              <div>
-                {menuItems.map((item, index) => (
-                  <Link key={index} to={item.path} style={linkStyle}>
-                    {item.text}
-                  </Link>
-                ))}
-                <button onClick={handleLogout} style={linkStyle}>Log Out</button>
-              </div>
-            </>
+            <div>
+              {menuItems.map((item, index) => (
+                <Link key={index} to={item.path} style={linkStyle}>
+                  {item.text}
+                </Link>
+              ))}
+              <button onClick={handleLogout} style={linkStyle}>
+                Log Out
+              </button>
+            </div>
           )}
         </nav>
       )}
@@ -160,6 +166,7 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<TaskList />} />
+          <Route path="/task/:id" element={<TaskDetails />} />
           <Route path="/add" element={<TaskForm />} />
         </Routes>
       </main>
